@@ -3,23 +3,141 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Water Drop Game</title>
+    <title>Water Warriors</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="game-wrapper">
-        <h1 class="game-title">Water Drop</h1>
-        <p class="game-tagline">Catch the good drops, avoid the bad ones!</p>
-        <div class="score-panel">
-            <div class="score">Score: <span id="score">0</span></div>
-            <div class="timer">Time: <span id="time">30</span>s</div>
-            <button id="start-btn">Start Game</button>
-        </div>
-        
-        <div id="game-container">
-        </div>
-    </div>
-    
+    <main class="app-shell">
+        <section id="menu-screen" class="screen active">
+            <div class="hero-card">
+                <div class="hero-title-wrap">
+                    <div class="hero-drop">💧</div>
+                    <h1 class="hero-title">Water Warriors</h1>
+                </div>
+
+                <p class="hero-subtitle">
+                    Test your knowledge about the global water crisis and unlock action-packed minigames.
+                </p>
+
+                <div class="how-to-card">
+                    <h2>How to Play</h2>
+                    <ol>
+                        <li>Answer trivia questions about clean water access.</li>
+                        <li>Each correct answer unlocks a clean water collection round.</li>
+                        <li>Collect clean water drops and avoid contaminated drops.</li>
+                        <li>Your score turns into impact points and people helped.</li>
+                    </ol>
+                </div>
+
+                <button id="start-mission-btn" class="primary-btn">Start Mission</button>
+
+                <p class="support-text">
+                    Supporting <span>charity: water</span> and clean water awareness.
+                </p>
+            </div>
+        </section>
+
+        <section id="trivia-screen" class="screen hidden">
+            <div class="top-status">
+                <div class="status-pill">
+                    <span>🏆 Score</span>
+                    <strong id="top-score">0</strong>
+                </div>
+                <div class="status-pill">
+                    <span>💧 People Helped</span>
+                    <strong id="top-people">0</strong>
+                </div>
+            </div>
+
+            <div class="trivia-card">
+                <div class="trivia-progress-wrap">
+                    <p id="question-counter">Question 1 of 4</p>
+                    <div class="progress-bar">
+                        <div id="progress-fill"></div>
+                    </div>
+                </div>
+
+                <h2 id="question-text">Question goes here</h2>
+
+                <div id="answer-buttons" class="answers"></div>
+
+                <div id="fact-box" class="fact-box hidden"></div>
+            </div>
+        </section>
+
+        <section id="game-screen" class="screen hidden">
+            <div class="game-panel">
+                <div class="game-header">
+                    <div class="game-stat">🏆 Score: <span id="game-score">0</span></div>
+                    <div class="game-stat">⏱ Time: <span id="time">30</span>s</div>
+                    <div class="game-stat">💧 People Helped: <span id="game-people">0</span></div>
+                    <button id="reset-round-btn" class="secondary-btn">Reset Round</button>
+                </div>
+
+                <div class="instruction-pill">
+                    Collect <span class="clean-text">clean water 💧</span>
+                    <span class="separator">|</span>
+                    Avoid <span class="dirty-text">contaminated ☠</span>
+                </div>
+
+                <div id="game-container"></div>
+
+                <p class="game-help">
+                    Click clean drops for points. Contaminated drops will hurt your score.
+                </p>
+            </div>
+
+            <div id="round-overlay" class="round-overlay hidden">
+                <div class="overlay-card">
+                    <h2 id="round-title">Round Complete</h2>
+                    <p id="round-message">Message goes here</p>
+                    <button id="continue-btn" class="primary-btn">Continue</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="results-screen" class="screen hidden">
+            <div class="results-card">
+                <div class="results-icon">🏆</div>
+                <h1>Mission Complete</h1>
+                <p class="results-subtitle">Nice work, Water Warrior.</p>
+
+                <div class="results-grid">
+                    <div class="result-box">
+                        <span>Total Score</span>
+                        <strong id="final-score">0</strong>
+                    </div>
+                    <div class="result-box">
+                        <span>People Helped</span>
+                        <strong id="final-people">0</strong>
+                    </div>
+                    <div class="result-box">
+                        <span>Minigames Unlocked</span>
+                        <strong id="final-unlocked">0</strong>
+                    </div>
+                </div>
+
+                <div id="final-message-box" class="final-message-box"></div>
+
+                <div class="cta-box">
+                    <h3>Your Impact</h3>
+                    <p>
+                        Clean water changes health, education, and opportunity. charity: water funds
+                        real clean water projects around the world.
+                    </p>
+                    <a href="https://www.charitywater.org" target="_blank" rel="noopener noreferrer" class="link-btn">
+                        Learn More
+                    </a>
+                </div>
+
+                <div class="results-actions">
+                    <button id="play-again-btn" class="primary-btn">Play Again</button>
+                    <button id="share-btn" class="secondary-btn">Copy Share Text</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
     <script src="script.js"></script>
 </body>
 </html>
