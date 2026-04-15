@@ -18,7 +18,7 @@
 
 body {
     min-height: 100vh;
-    font-family: Arial, sans-serif;
+    font-family: 'Montserrat', Arial, sans-serif;
     background: linear-gradient(180deg, #eaf8ff 0%, #dff5fb 100%);
     color: var(--cw-dark);
 }
