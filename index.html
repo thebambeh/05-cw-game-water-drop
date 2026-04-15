@@ -8,6 +8,8 @@
 </head>
 <body>
     <main class="app-shell">
+
+        <!-- MENU SCREEN -->
         <section id="menu-screen" class="screen active">
             <div class="hero-card">
                 <div class="hero-title-wrap">
@@ -29,6 +31,18 @@
                     </ol>
                 </div>
 
+                <!-- Difficulty Selector -->
+                <div style="margin-bottom: 20px;">
+                    <label for="difficulty-select" style="font-weight: 700; margin-right: 10px;">
+                        Difficulty:
+                    </label>
+                    <select id="difficulty-select" style="padding: 8px 12px; border-radius: 8px;">
+                        <option value="easy">Easy</option>
+                        <option value="normal" selected>Normal</option>
+                        <option value="hard">Hard</option>
+                    </select>
+                </div>
+
                 <button id="start-mission-btn" class="primary-btn">Start Mission</button>
 
                 <p class="support-text">
@@ -37,12 +51,7 @@
             </div>
         </section>
 
-        <select id="difficulty-select">
-          <option value="easy">Easy</option>
-          <option value="normal" selected>Normal</option>
-          <option value="hard">Hard</option>
-        </select>
-
+        <!-- TRIVIA SCREEN -->
         <section id="trivia-screen" class="screen hidden">
             <div class="top-status">
                 <div class="status-pill">
@@ -71,6 +80,7 @@
             </div>
         </section>
 
+        <!-- GAME SCREEN -->
         <section id="game-screen" class="screen hidden">
             <div class="game-panel">
                 <div class="game-header">
@@ -102,6 +112,7 @@
             </div>
         </section>
 
+        <!-- RESULTS SCREEN -->
         <section id="results-screen" class="screen hidden">
             <div class="results-card">
                 <div class="results-icon">🏆</div>
@@ -142,6 +153,7 @@
                 </div>
             </div>
         </section>
+
     </main>
 
     <script src="script.js"></script>
