@@ -63,6 +63,8 @@ const screens = {
   results: document.getElementById("results-screen")
 };
 
+const difficultySelect = document.getElementById("difficulty-select");
+
 const startMissionBtn = document.getElementById("start-mission-btn");
 const answerButtons = document.getElementById("answer-buttons");
 const questionText = document.getElementById("question-text");
@@ -102,7 +104,8 @@ const state = {
   answeredCorrectly: false,
   roundComplete: false,
   timerInterval: null,
-  dropInterval: null
+  dropInterval: null,
+  difficulty: "normal"
 };
 
 startMissionBtn.addEventListener("click", startMission);
@@ -126,6 +129,8 @@ function startMission() {
   state.totalScore = 0;
   state.totalPeopleHelped = 0;
   state.minigamesUnlocked = 0;
+  state.difficulty = difficultySelect ? difficultySelect.value : "normal";
+
   updateTopStats();
   renderQuestion();
   showScreen("trivia");
@@ -140,8 +145,8 @@ function renderQuestion() {
   const currentQuestion = questions[state.currentQuestionIndex];
 
   questionCounter.textContent = `Question ${state.currentQuestionIndex + 1} of ${questions.length}`;
-  questionText.textContent = currentQuestion.question;
   progressFill.style.width = `${((state.currentQuestionIndex + 1) / questions.length) * 100}%`;
+  questionText.textContent = currentQuestion.question;
 
   factBox.classList.add("hidden");
   factBox.textContent = "";
@@ -164,11 +169,13 @@ function handleAnswer(selectedIndex) {
   buttons.forEach((button, index) => {
     button.classList.add("disabled");
 
-    if (index === currentQuestion.correctIndex)
+    if (index === currentQuestion.correctIndex) {
       button.classList.add("correct");
+    }
 
-    if (index === selectedIndex && !isCorrect)
+    if (index === selectedIndex && !isCorrect) {
       button.classList.add("wrong");
+    }
   });
 
   factBox.classList.remove("hidden");
@@ -178,6 +185,7 @@ function handleAnswer(selectedIndex) {
     state.minigamesUnlocked += 1;
     state.answeredCorrectly = true;
     updateTopStats();
+
     factBox.innerHTML = `<strong>Correct.</strong> ${currentQuestion.fact}<br><br><strong>Minigame unlocked. Get ready.</strong>`;
 
     setTimeout(() => {
@@ -198,9 +206,16 @@ function startRound() {
   clearGameLoops();
 
   state.roundScore = 0;
-  state.timeLeft = 30;
   state.gameRunning = true;
   state.roundComplete = false;
+
+  if (state.difficulty === "easy") {
+    state.timeLeft = 35;
+  } else if (state.difficulty === "hard") {
+    state.timeLeft = 20;
+  } else {
+    state.timeLeft = 30;
+  }
 
   gameContainer.innerHTML = "";
   gameScore.textContent = state.totalScore;
@@ -214,13 +229,39 @@ function startRound() {
 }
 
 function getSpawnRate() {
-  const difficulty = state.currentQuestionIndex;
-  return Math.max(380, 650 - difficulty * 70);
+  if (state.difficulty === "easy") {
+    return 750;
+  }
+
+  if (state.difficulty === "hard") {
+    return 350;
+  }
+
+  return 550;
 }
 
 function getFallDuration() {
-  const difficulty = state.currentQuestionIndex;
-  return Math.max(2.2, 3.7 - difficulty * 0.3);
+  if (state.difficulty === "easy") {
+    return 4;
+  }
+
+  if (state.difficulty === "hard") {
+    return 2.2;
+  }
+
+  return 3;
+}
+
+function getRoundWinTarget() {
+  if (state.difficulty === "easy") {
+    return 15;
+  }
+
+  if (state.difficulty === "hard") {
+    return 25;
+  }
+
+  return 20;
 }
 
 function updateTimer() {
@@ -233,8 +274,9 @@ function updateTimer() {
 }
 
 function createDrop() {
-  if (!state.gameRunning)
+  if (!state.gameRunning) {
     return;
+  }
 
   const drop = document.createElement("div");
   const isGood = Math.random() > 0.28;
@@ -255,16 +297,18 @@ function createDrop() {
 
   drop.addEventListener("click", () => handleDropClick(drop));
   drop.addEventListener("animationend", () => {
-    if (drop.dataset.clicked === "false")
+    if (drop.dataset.clicked === "false") {
       drop.remove();
+    }
   });
 
   gameContainer.appendChild(drop);
 }
 
 function handleDropClick(drop) {
-  if (!state.gameRunning || drop.dataset.clicked === "true")
+  if (!state.gameRunning || drop.dataset.clicked === "true") {
     return;
+  }
 
   drop.dataset.clicked = "true";
 
@@ -274,8 +318,9 @@ function handleDropClick(drop) {
   state.totalScore = Math.max(0, state.totalScore + points);
   state.roundScore += points;
 
-  if (state.roundScore < 0)
+  if (state.roundScore < 0) {
     state.roundScore = 0;
+  }
 
   state.totalPeopleHelped = Math.max(0, Math.floor(state.totalScore / 5));
 
@@ -306,8 +351,9 @@ function createFloatingText(drop, points) {
 }
 
 function finishRound() {
-  if (!state.gameRunning)
+  if (!state.gameRunning) {
     return;
+  }
 
   state.gameRunning = false;
   state.roundComplete = true;
@@ -315,17 +361,20 @@ function finishRound() {
 
   [...document.querySelectorAll(".water-drop")].forEach((drop) => drop.remove());
 
-  const didWinRound = state.roundScore >= 20;
+  const roundWinTarget = getRoundWinTarget();
+  const didWinRound = state.roundScore >= roundWinTarget;
   const message = didWinRound
     ? getRandomMessage(winningMessages)
     : getRandomMessage(losingMessages);
 
   roundTitle.textContent = didWinRound ? "Round Won" : "Round Complete";
-  roundMessage.textContent = `${message} You scored ${state.roundScore} point${state.roundScore === 1 ? "" : "s"} in this round.`;
+  roundMessage.textContent = `${message} You scored ${state.roundScore} point${state.roundScore === 1 ? "" : "s"} in this round. Target score: ${roundWinTarget}.`;
+
   roundOverlay.classList.remove("hidden");
 
-  if (didWinRound)
+  if (didWinRound) {
     launchConfetti();
+  }
 }
 
 function continueAfterRound() {
@@ -357,8 +406,9 @@ function showFinalResults() {
 
   finalMessageBox.textContent = finalMessage;
 
-  if (wonOverall)
+  if (wonOverall) {
     launchConfetti();
+  }
 }
 
 function clearGameLoops() {
@@ -369,12 +419,14 @@ function clearGameLoops() {
 }
 
 function resetCurrentRound() {
-  if (!screens.game.classList.contains("hidden"))
+  if (!screens.game.classList.contains("hidden")) {
     startRound();
+  }
 }
 
 function resetWholeGame() {
   clearGameLoops();
+
   state.currentQuestionIndex = 0;
   state.totalScore = 0;
   state.totalPeopleHelped = 0;
@@ -383,6 +435,8 @@ function resetWholeGame() {
   state.timeLeft = 30;
   state.gameRunning = false;
   state.roundComplete = false;
+  state.difficulty = difficultySelect ? difficultySelect.value : "normal";
+
   updateTopStats();
   showScreen("menu");
 }
