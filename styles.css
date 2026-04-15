@@ -507,6 +507,21 @@ button {
     box-shadow: 0 0 0 3px rgba(46, 157, 247, 0.25);
 }
 
+.global-footer {
+    text-align: center;
+    padding: 20px 0 30px;
+}
+
+.global-footer a {
+    color: var(--cw-blue);
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.global-footer a:hover {
+    text-decoration: underline;
+}
+
 @keyframes dropFall {
     from {
         transform: translateY(0);
