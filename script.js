@@ -108,11 +108,25 @@ const state = {
   difficulty: "normal"
 };
 
+const sfx = {
+  good: new Audio("sounds/collectWater.mp3"),
+  bad: new Audio("sounds/contaminatedWater.mp3"),
+  win: new Audio("sounds/winnerCollectWater.mp3"),
+  lose: new Audio("sounds/loserCollectWater.mp3"),
+  correct: new Audio("sounds/correctQuizAnswer.mp3"),
+  wrong: new Audio("sounds/wrongQuizAnswer.mp3")
+};
+
 startMissionBtn.addEventListener("click", startMission);
 resetRoundBtn.addEventListener("click", resetCurrentRound);
 continueBtn.addEventListener("click", continueAfterRound);
 playAgainBtn.addEventListener("click", resetWholeGame);
 shareBtn.addEventListener("click", copyShareText);
+
+function playSound(audio) {
+  audio.currentTime = 0;
+  audio.play().catch(() => {});
+}
 
 function showScreen(screenName) {
   Object.values(screens).forEach((screen) => {
@@ -181,6 +195,8 @@ function handleAnswer(selectedIndex) {
   factBox.classList.remove("hidden");
 
   if (isCorrect) {
+    playSound(sfx.correct);
+
     state.totalScore += 10;
     state.minigamesUnlocked += 1;
     state.answeredCorrectly = true;
@@ -192,6 +208,8 @@ function handleAnswer(selectedIndex) {
       startRound();
     }, 1800);
   } else {
+    playSound(sfx.wrong);
+
     state.answeredCorrectly = false;
     factBox.innerHTML = `<strong>Not quite.</strong> ${currentQuestion.fact}<br><br>You will move on to the next question.`;
 
@@ -315,6 +333,12 @@ function handleDropClick(drop) {
   const isGood = drop.dataset.type === "good";
   const points = isGood ? 1 : -2;
 
+  if (isGood) {
+    playSound(sfx.good);
+  } else {
+    playSound(sfx.bad);
+  }
+
   state.totalScore = Math.max(0, state.totalScore + points);
   state.roundScore += points;
 
@@ -373,7 +397,10 @@ function finishRound() {
   roundOverlay.classList.remove("hidden");
 
   if (didWinRound) {
+    playSound(sfx.win);
     launchConfetti();
+  } else {
+    playSound(sfx.lose);
   }
 }
 
